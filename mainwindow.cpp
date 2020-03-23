@@ -13,7 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->recordButton, &QPushButton::clicked, this, &MainWindow::recordButtonClicked);
     QObject::connect(ui->shotButton, &QPushButton::clicked, this, &MainWindow::saveImage);
 
-    ui->deviceComboBox->addItems({"0", "1", "2", "3"});
     streamingTimer = new QTimer(this);
     QObject::connect(streamingTimer, &QTimer::timeout, this, &MainWindow::streamingEvent);
 }
@@ -26,12 +25,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::streamButtonClicked(){
     if (!streaming){
-        if (ui->deviceRadioButton->isChecked()){
-            cap.open(ui->deviceComboBox->currentText().toInt());
-        }else{
+        bool isInt;
+        int stream = ui->adressEdit->text().toInt(&isInt);
+        if (isInt)
+            cap.open(stream);
+        else
             cap.open(ui->adressEdit->text().toStdString());
-        }
-
         if(!cap.isOpened())
         {
             QMessageBox *msg = new QMessageBox(this);
@@ -41,10 +40,7 @@ void MainWindow::streamButtonClicked(){
             streaming = true;
             ui->streamButton->setText(QString("Закрыть поток"));
             ui->recordButton->setEnabled(true);
-            ui->deviceComboBox->setEnabled(false);
             ui->adressEdit->setEnabled(false);
-            ui->adressRadioButton->setEnabled(false);
-            ui->deviceRadioButton->setEnabled(false);
             ui->shotButton->setEnabled(true);
             streamingTimer->start(100);
         }
@@ -54,9 +50,6 @@ void MainWindow::streamButtonClicked(){
         ui->recordButton->setText(QString("Начать запись"));
         streaming = false;
         recording = false;
-        ui->deviceComboBox->setEnabled(true);
-        ui->deviceRadioButton->setEnabled(true);
-        ui->adressRadioButton->setEnabled(true);
         ui->shotButton->setEnabled(false);
         ui->adressEdit->setEnabled(true);
 
