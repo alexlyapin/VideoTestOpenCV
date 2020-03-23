@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ico/cam.ico</file>
+    </qresource>
+</RCC>
