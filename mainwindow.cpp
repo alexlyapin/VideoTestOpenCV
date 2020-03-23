@@ -60,16 +60,17 @@ void MainWindow::streamButtonClicked(){
 
 void MainWindow::streamingEvent(){
     if (cap.read(frame)){
-        if (!init){
-            std::string filename =  "video.avi";
-            int fcc =   CV_FOURCC('D','I','V','X');
-            int fps =   10; // Since timer works per 100ms
-            cv::Size frameSize(cap.get(CV_CAP_PROP_FRAME_WIDTH),cap.get(CV_CAP_PROP_FRAME_HEIGHT));
-            writer = cv::VideoWriter(filename,fcc,fps,frameSize);
-            init = true;
-        }
 
         if (recording){
+            if (!init){
+                std::string filename =  "video.avi";
+                int fcc =   CV_FOURCC('D','I','V','X');
+                int fps =   10; // Since timer works per 100ms
+                cv::Size frameSize(cap.get(CV_CAP_PROP_FRAME_WIDTH),cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+                writer = cv::VideoWriter(filename,fcc,fps,frameSize);
+                init = true;
+            }
+
             putText(frame,"[REC]",cv::Point(0,30),5,1,cv::Scalar(0,0,225));
             writer.write(frame);
         }
